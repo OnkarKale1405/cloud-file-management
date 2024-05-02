@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 
 const Login = () => {
     return (
@@ -31,11 +32,11 @@ const Login = () => {
                             </div>
 
                             <div className='mt-8'>
-                                <button type="submit" class="flex w-full justify-center rounded-md bg-[#666585] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#444363] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Sign in</button>
+                                <button type="submit" class="flex w-full justify-center rounded-md bg-[#666585] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#444363] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Login</button>
                             </div>
                             <p class="my-2 text-center text-sm font-semibold text-[#383838]">
                                 Don't have an account?
-                                <a href="#" class="font-bold leading-6 text-indigo-600 hover:text-indigo-500 mx-1">Sign Up</a>
+                                <NavLink to="/register" className="font-bold leading-6 text-indigo-600 hover:text-indigo-500 mx-1">Sign Up</NavLink>
                             </p>
                         </form>
                     </div>
