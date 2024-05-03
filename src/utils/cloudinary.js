@@ -13,10 +13,12 @@ const uploadOnCloudinary = async (path) => {
         // upload the file on cloudinary
 
         const response = await cloudinary.uploader.upload(path, {
-            resource_type: "auto"
+            resource_type: "auto",
+            folder:"Uploaded Files"
         })
         // file has been uploaded successfully
         fs.unlinkSync(path);
+        console.log("File uploaded successfully");
         return response
     }
     catch (err) {
@@ -25,7 +27,7 @@ const uploadOnCloudinary = async (path) => {
     }
 }
 
-export const deleteOnCloudinary = async (imageUrl) => {
+const deleteOnCloudinary = async (imageUrl) => {
     try {
         if (!imageUrl) return null;
 
@@ -42,4 +44,4 @@ export const deleteOnCloudinary = async (imageUrl) => {
     }
 };
 
-export { uploadOnCloudinary, deleteOnCloudinary };
+export { uploadOnCloudinary,deleteOnCloudinary };
