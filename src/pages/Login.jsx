@@ -32,7 +32,9 @@ const Login = () => {
                             </div>
 
                             <div className='mt-8'>
-                                <button type="submit" class="flex w-full justify-center rounded-md bg-[#666585] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#444363] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Login</button>
+                                <NavLink to="/dashboard">
+                                    <button type="submit" class="flex w-full justify-center rounded-md bg-[#666585] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#444363] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Login</button>
+                                </NavLink>
                             </div>
                             <p class="my-2 text-center text-sm font-semibold text-[#383838]">
                                 Don't have an account?
