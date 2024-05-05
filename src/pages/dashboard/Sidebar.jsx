@@ -62,24 +62,21 @@ export default function Sidebar({ children }) {
     )
 }
 
-// 
-
 export function SidebarItem({ icon, text, active, alert, to }) {
     const { expanded } = useContext(SidebarContext)
 
     return (
-        <li
-            className={`
+        <li>
+            <Link to={to}
+                className={`
                 relative flex items-center py-2 px-3 my-1
                 font-medium rounded-md cursor-pointer
                 transition-colors group
                 ${active
-                    ? "bg-indigo-200 text-indigo-800"
-                    : "hover:bg-indigo-50 text-gray-600"
-                }
-            `}
-        >
-            <Link to={to} className="flex items-center">
+                        ? "bg-indigo-200 text-indigo-800"
+                        : "hover:bg-indigo-200 text-gray-600"
+                    }
+            `}>
                 {icon}
                 <span
                     className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}

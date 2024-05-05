@@ -2,16 +2,24 @@ import React, { useState, useEffect } from 'react';
 
 const FilterDropdown = ({ onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isDepartmentOpen, setIsDepartmentOpen] = useState(false);
 
     const handleFilterChange = (option) => {
         onChange(option);
-        setIsOpen(false); // Close the dropdown after selecting an option
+        setIsOpen(false);
     };
 
     return (
         <div className="relative inline-block text-left">
             <div>
-                <button type="button" onClick={() => setIsOpen(!isOpen)} className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={`inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 ${isOpen ? 'rounded-t-md' : ''}`}
+                    id="options-menu"
+                    aria-haspopup="true"
+                    aria-expanded="true"
+                >
                     Filter
                     <svg className="mt-0.5 ml-1 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M6.293 7.293a1 1 0 0 1 1.414 0L10 9.586l2.293-2.293a1 1 0 1 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z" />
@@ -23,9 +31,42 @@ const FilterDropdown = ({ onChange }) => {
                 <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                     <div className="bg-white rounded-md shadow-xs">
                         <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <button onClick={() => handleFilterChange('size')} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Size</button>
-                            <button onClick={() => handleFilterChange('uploadAsc')} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Upload Time (Ascending)</button>
-                            <button onClick={() => handleFilterChange('uploadDesc')} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Upload Time (Descending)</button>
+                            <button onClick={() => handleFilterChange('size')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Size</button>
+                            <button onClick={() => handleFilterChange('uploadAsc')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Upload Time (Ascending)</button>
+                            <button onClick={() => handleFilterChange('uploadDesc')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Upload Time (Descending)</button>
+                            {/* Nested dropdown for departments */}
+                            <div
+                                onMouseEnter={() => setIsDepartmentOpen(true)}
+                                className="relative"
+                            >
+                                <button
+                                    onClick={() => { }} // handle department dropdown
+                                    className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    role="menuitem"
+                                >
+                                    Departments
+                                    <svg className="ml-2 h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M6.293 7.293a1 1 0 0 1 1.414 0L10 9.586l2.293-2.293a1 1 0 1 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z" />
+                                    </svg>
+                                </button>
+                                {/* Nested dropdown content */}
+                                {isDepartmentOpen && (
+                                    <div
+                                        onMouseEnter={() => setIsDepartmentOpen(true)}
+                                        onMouseLeave={() => setIsDepartmentOpen(false)}
+                                        className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg"
+                                    >
+                                        <div className="bg-white rounded-md shadow-xs">
+                                            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                <button onClick={() => handleFilterChange('Computer Science')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Computer Science</button>
+                                                <button onClick={() => handleFilterChange('Mechanical')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Mechanical</button>
+                                                <button onClick={() => handleFilterChange('Chemical')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Chemical</button>
+                                                <button onClick={() => handleFilterChange('AI/ML')} className="block w-full px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">AI/ML</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -34,7 +75,7 @@ const FilterDropdown = ({ onChange }) => {
     );
 };
 
-const UploadedFilesTable = () => {
+const UploadedFilesStudent = () => {
     const [files, setFiles] = useState([
         {
             id: 1,
@@ -105,25 +146,38 @@ const UploadedFilesTable = () => {
     const handleFilterChange = (option) => {
         setFilterOption(option);
         setIsFilterOpen(false);
-        // You can implement filter logic based on the selected option here
+        switch (option) {
+            case 'size':
+                setSearchedFiles([...searchedFiles].sort((a, b) => {
+                    const getSizeValue = (size) => {
+                        const [value, unit] = size.split(' ');
+                        return unit === 'MB' ? parseFloat(value) * 1024 : parseFloat(value);
+                    };
+                    return getSizeValue(a.size) - getSizeValue(b.size);
+                }));
+                break;
+            case 'uploadAsc':
+                setSearchedFiles([...searchedFiles].sort((a, b) => new Date(a.uploadDate) - new Date(b.uploadDate)));
+                break;
+            case 'uploadDesc':
+                setSearchedFiles([...searchedFiles].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)));
+                break;
+            default:
+                break;
+        }
     };
 
+
     return (
-        <div className='rounded-xl border border-blue-300'>
-            <div className='heading-area border-b border-blue-300 flex justify-start items-center px-5 py-6'>
-                <div>
-                    <p className='text-gray-600 text-2xl'>Uploaded files</p>
-                    <p className='text-[#838AB8] text-sm my-1'>All the files that have been uploaded by you</p>
-                </div>
-            </div>
-            <div className="flex justify-end my-4">
+        <div className='rounded-xl border border-blue-300 my-4'>
+            <div className="flex justify-end px-3 py-4">
                 <div>
                     <input
                         type="text"
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className={`px-3 py-1 border rounded-lg mx-1 ${isFilterOpen ? 'w-96' : 'w-64'}`}
+                        className={`px-3 py-1 border border-gray-400 rounded-lg mx-1 ${isFilterOpen ? 'w-96' : 'w-64'}`}
                     />
                     <FilterDropdown onChange={(option) => handleFilterChange(option)} />
                 </div>
@@ -162,7 +216,7 @@ const UploadedFilesTable = () => {
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white rounded-bl-xl rounded-br-xl">
+                    <tbody className="bg-white rounded-bl-xl rounded-br-xl border-0">
                         {searchedFiles.length === 0 ? (
                             <tr>
                                 <td colSpan="6" className="px-3 py-4">No file exists.</td>
@@ -203,4 +257,4 @@ const UploadedFilesTable = () => {
     );
 };
 
-export default UploadedFilesTable;
+export default UploadedFilesStudent;

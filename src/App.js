@@ -11,6 +11,7 @@ import Landing from "./pages/Landing";
 import Regsiter from "./pages/Regsiter";
 import Dashboard from "./pages/dashboard/Dashboard"
 import Files from "./pages/dashboard/Files";
+import Profile from "./pages/dashboard/Profile";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Regsiter />} />
       <Route element={<Dashboard />} >
+        <Route path="/dashboard/profile" element={<Profile />}></Route>
         <Route path="/dashboard/files" element={<Files />}></Route>
       </Route>
     </>

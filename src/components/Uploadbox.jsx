@@ -14,11 +14,11 @@ const Uploadbox = () => {
     return (
         <div className='upload-box w-full' style={{ overflowX: 'hidden' }}>
             <form>
-                <div className='w-full h-[12rem] flex justify-center my-4 bg-blue-100 rounded-xl
-                    border-2 border-blue-400'
+                <div className='w-full h-[12rem] flex justify-center items-center my-4 bg-blue-100 rounded-xl
+                    border-2 border-blue-400 relative'
                     onClick={handleFileInputClick}>
                     <input type="file" name="file" id="file" hidden ref={fileInputRef} />
-                    <p>Browse file to upload</p>
+                    <p className="text-xl text-[#323232]">Browse file to upload</p>
                 </div>
             </form>
             {showProgress && (
