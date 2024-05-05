@@ -14,7 +14,7 @@ const Uploadbox = () => {
     return (
         <div className='upload-box w-full' style={{ overflowX: 'hidden' }}>
             <form>
-                <div className='w-full h-[12rem] flex justify-center my-4 bg-blue-100 rounded-lg
+                <div className='w-full h-[12rem] flex justify-center my-4 bg-blue-100 rounded-xl
                     border-2 border-blue-400'
                     onClick={handleFileInputClick}>
                     <input type="file" name="file" id="file" hidden ref={fileInputRef} />

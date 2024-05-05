@@ -131,7 +131,8 @@ const UploadedFilesTable = () => {
                     <button onClick={handleDeleteSelectedFiles} className={`px-3 py-1 bg-red-500 text-white rounded-lg mx-1 ${isFilterOpen ? 'ml-4' : ''}`}>Delete Selected</button>
                 </div>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto
+            ">
                 <table className="min-w-full bg-blue-100 rounded-lg border">
                     <thead>
                         <tr className="rounded-tl-lg rounded-tr-lg">

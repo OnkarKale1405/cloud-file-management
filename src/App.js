@@ -18,8 +18,8 @@ const router = createBrowserRouter(
       <Route index path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Regsiter />} />
-      <Route path="/dashboard" element={<Dashboard />} >
-        <Route path="files" element={<Files />}></Route>
+      <Route element={<Dashboard />} >
+        <Route path="/dashboard/files" element={<Files />}></Route>
       </Route>
     </>
   )

@@ -4,7 +4,7 @@ import UploadedFilesTable from '../../components/UploadedFilesTable'
 
 const Files = () => {
     return (
-        <div>
+        <div className='px-2'>
             <Uploadbox />
             <UploadedFilesTable />
         </div>
