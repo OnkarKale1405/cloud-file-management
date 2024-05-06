@@ -8,7 +8,7 @@ const Landing = () => {
             style={{
                 backgroundImage: 'linear-gradient(to bottom right, #FDB2D0 0%,#A2D2FF 50%, #F9DBE7 80%, #F4DDEF 100%)',
             }}>
-            <Navbar />
+            {/* <Navbar /> */}
             <div className="flex flex-grow w-full h-full">
                 <div className="w-[60%] h-full flex justify-center items-center">
                     <div className="w-[90%] h-[60%] text-[#323232] flex flex-col justify-center">
@@ -20,7 +20,7 @@ const Landing = () => {
                                         backgroundImage: 'linear-gradient(to right, #C2D2F4 0%, #F1E6EE 100%)'
                                     }}>one place.</span>
                             </span>
-                            <p className='w-[80%] font-semibold my-2 leading-tight'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus et blanditiis consequuntur aperiam beatae eaque, dolore facere distinctio magnam iusto non numquam accusamus, error, similique cum dolor accusantium deserunt dolorum.</p>
+                            <p className='w-[80%] font-semibold my-2 leading-tight'>A cloud file management system for educational purposes provides a streamlined, secure platform where teachers can upload educational materials and students can easily access and download these files from anywhere. This system facilitates efficient sharing of resources, enabling a seamless flow of information between educators and learners,  and supports a flexible learning environment.</p>
                             <div className='action-buttons my-4'>
                                 <NavLink to="/login">
                                     <button className="px-6 py-2 mx-1 border border-[#323232] hover:bg-[#323232] hover:text-white">Login</button>

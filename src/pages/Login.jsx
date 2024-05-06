@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuth from '../hooks/useAuth';
+import videoMP4 from "../assets/bubbles.mp4"
 
 const Login = () => {
     // State to hold form data and validation errors
@@ -129,9 +130,8 @@ const Login = () => {
                     </div>
                 </div>
                 <div className='h-full w-1/2 bg-gray-200 rounded-3xl'>
-
-                </div>
-            </div>
+                    <video src={videoMP4} autoPlay loop muted className="object-cover w-full h-full rounded-3xl"></video>
+                </div>            </div>
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
+import FileSaver from 'file-saver';
 
 const FilterDropdown = ({ onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -125,32 +126,36 @@ const UploadedFilesStudent = ({email}) => {
         ));
     }, [files, searchTerm]);
 
-    const handleDownloadFile = async(fileId,fileURL) => {
-        console.log('Downloading file with id:', fileId);
-        try {
-            const secure_url = fileURL; // Assuming fileURL is a valid URL string
-        const response = await fetch('http://localhost:8000/api/users/downloadFile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
-            });
+        const handleDownloadFile = async(fileId,fileURL,fileName) => {
+            FileSaver.saveAs(fileURL,fileName);
     
-            if (!response.ok) {
-                throw new Error('Failed to delete file');
-            }
+            console.log('Downloading file with id:', fileId);
+            // try {
+            //     const secure_url = fileURL; // Assuming fileURL is a valid URL string
+            // const response = await fetch('http://localhost:8000/api/users/downloadFile', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
+            //     });
+        
+            //     if (!response.ok) {
+            //         throw new Error('Failed to delete file');
+            //     }
+        
+            //     const result = await response.json();
+            //     console.log(result);
+            //     // If you need to perform additional actions after deleting the file
+            //     fetchFiles();
+            //     // console.log('File deleted successfully:', fileId);
+            // } catch (error) {
+            //     console.error('Error deleting file:', error);
+            // }
     
-            const result = await response.json();
-            console.log(result);
-            // If you need to perform additional actions after deleting the file
-            fetchFiles();
-            // console.log('File deleted successfully:', fileId);
-        } catch (error) {
-            console.error('Error deleting file:', error);
-        }
-
-    };
+        };
+    
+    
 
     const handleDeleteFile = (fileId) => {
         setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
@@ -237,9 +242,9 @@ const UploadedFilesStudent = ({email}) => {
                             <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '15%' }}>
                                 Size
                             </th>
-                            <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '20%' }}>
+                            {/* <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '20%' }}>
                                 Uploaded By
-                            </th>
+                            </th> */}
                             <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '15%' }}>
                                 Date of Upload
                             </th>
@@ -265,18 +270,18 @@ const UploadedFilesStudent = ({email}) => {
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                         {file.size}
                                     </td>
-                                    <td className="p-3 whitespace-no-wrap text-sm leading-5 flex">
+                                    {/* <td className="p-3 whitespace-no-wrap text-sm leading-5 flex">
                                         <div className="w-8 h-8 rounded-full bg-blue-300"></div>
                                         <div className="flex flex-col ml-2">
-                                            {/* <div>{user.firstName}</div> */}
+                                            <div>{user.firstName}</div>
                                             <div className="text-xs text-gray-500">{auth.email}</div>
                                         </div>
-                                    </td>
+                                    </td> */}
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                         {file.uploadDate}
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                                        <button onClick={() => handleDownloadFile(file.id,file.fileURL)} className="text-blue-600 underline">Download</button>
+                                        <button onClick={() => handleDownloadFile(file.id,file.fileURL,file.fileName)} className="text-blue-600 underline">Download</button>
                                         {/* <button onClick={() => handleDeleteFile(file.id)} className="ml-2 text-red-600 underline">Delete</button> */}
                                     </td>
                                 </tr>

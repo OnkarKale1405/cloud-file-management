@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFiles } from '../context/FilesProvider';
 import useAuth from "../hooks/useAuth";
+import FileSaver from "file-saver" 
 
 // import useAuth from '../hooks/useAuth';
 
 const FilterDropdown = ({ onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     
+
 
     const handleFilterChange = (option) => {
         onChange(option);
@@ -160,30 +162,32 @@ const UploadedFilesTeacher = ({email}) => {
         ));
     }, [files, searchTerm]);
 
-    const handleDownloadFile = async(fileId,fileURL) => {
+    const handleDownloadFile = async(fileId,fileURL,fileName) => {
+        FileSaver.saveAs(fileURL,fileName);
+
         console.log('Downloading file with id:', fileId);
-        try {
-            const secure_url = fileURL; // Assuming fileURL is a valid URL string
-        const response = await fetch('http://localhost:8000/api/users/downloadFile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
-            });
+        // try {
+        //     const secure_url = fileURL; // Assuming fileURL is a valid URL string
+        // const response = await fetch('http://localhost:8000/api/users/downloadFile', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
+        //     });
     
-            if (!response.ok) {
-                throw new Error('Failed to delete file');
-            }
+        //     if (!response.ok) {
+        //         throw new Error('Failed to delete file');
+        //     }
     
-            const result = await response.json();
-            console.log(result);
-            // If you need to perform additional actions after deleting the file
-            fetchFiles();
-            // console.log('File deleted successfully:', fileId);
-        } catch (error) {
-            console.error('Error deleting file:', error);
-        }
+        //     const result = await response.json();
+        //     console.log(result);
+        //     // If you need to perform additional actions after deleting the file
+        //     fetchFiles();
+        //     // console.log('File deleted successfully:', fileId);
+        // } catch (error) {
+        //     console.error('Error deleting file:', error);
+        // }
 
     };
 
@@ -294,7 +298,7 @@ const UploadedFilesTeacher = ({email}) => {
                 </button>
             </form>
             {showProgress && currentFile && (
-    <section className='loading-area'>
+    <section className='loading-area px-1 my-2'>
         <div className='content w-full h-28 bg-blue-100 rounded-lg flex flex-col relative'>
             <div className='file-description w-full h-[60%] flex justify-start'>
                 <div className='h-full w-20 flex justify-center items-center'>
@@ -335,7 +339,7 @@ const UploadedFilesTeacher = ({email}) => {
                     <FilterDropdown onChange={(option) => handleFilterChange(option)} />
                 </div>
                 <div>
-                    <button onClick={handleDeleteSelectedFiles} className={`px-3 py-1 bg-red-500 text-white rounded-lg mx-1 ${isFilterOpen ? 'ml-4' : ''}`}>Delete Selected</button>
+                    {/* <button onClick={handleDeleteSelectedFiles} className={`px-3 py-1 bg-red-500 text-white rounded-lg mx-1 ${isFilterOpen ? 'ml-4' : ''}`}>Delete Selected</button> */}
                 </div>
             </div>
             <div className="overflow-x-auto
@@ -397,7 +401,7 @@ const UploadedFilesTeacher = ({email}) => {
                                         {file.uploadDate}
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                                        <button onClick={() => handleDownloadFile(file._id,file.fileURL)} className="text-blue-600 underline">Download</button>
+                                        <button onClick={() => handleDownloadFile(file._id,file.fileURL,file.fileName)} className="text-blue-600 underline">Download</button>
                                         <button onClick={() => handleDeleteFile(file._id,file.fileURL)} className="ml-2 text-red-600 underline">Delete</button>
                                     </td>
                                 </tr>

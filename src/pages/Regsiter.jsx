@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import { NavLink } from 'react-router-dom';
 import { NavLink, useNavigate } from 'react-router-dom';
+import videoMP4 from "../assets/bubbles.mp4"
 
 // First Step Component
 const StepOne = ({ formData, onNext, onChange }) => {
@@ -186,10 +187,10 @@ const Register = () => {
     return (
         <div className='h-screen w-full bg-[#BED5EB] text-[#323232] flex justify-center items-center shadow-lg'>
             <div className='container w-[75%] h-[90%] bg-[#FCFCFC] rounded-3xl flex'>
-                <div className='h-full w-1/2 bg-gray-200 rounded-3xl'>
-                    {/* Avatar preview */}
-                </div>
-                <div className="h-full w-1/2 text-[#323232] rounded-3xl flex justify-center items-start mt-16">
+            <div className='h-full w-1/2 bg-gray-200 rounded-3xl'>
+                    <video src={videoMP4} autoPlay loop muted className="object-cover w-full h-full rounded-3xl"></video>
+                </div>
+                      <div className="h-full w-1/2 text-[#323232] rounded-3xl flex justify-center items-start mt-16">
                     {step === 1 ? (
                         <StepOne formData={formData} onNext={handleNext} onChange={handleChange} />
                     ) : (

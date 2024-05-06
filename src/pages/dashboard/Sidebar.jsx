@@ -18,6 +18,10 @@ export default function Sidebar({ children }) {
     }
     const {auth} = useAuth();
 
+    const HandleHomeClick=()=>{
+        navigate('/');
+    }
+
 
     return (
         <aside className="h-screen">
@@ -25,8 +29,8 @@ export default function Sidebar({ children }) {
                 <div className="p-4 pb-2 flex justify-between items-center">
                     <img
                         src="https://img.logoipsum.com/243.svg"
-                        className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"
-                            }`}
+                        className={`overflow-hidden transition-all cursor-pointer ${expanded ? "w-32" : "w-0"
+                            }`} onClick={()=>HandleHomeClick()}
                         alt=""
                     />
                     <button
