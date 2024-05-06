@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// import useAuth from '../hooks/useAuth';
 
 const FilterDropdown = ({ onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -34,33 +35,58 @@ const FilterDropdown = ({ onChange }) => {
     );
 };
 
-const UploadedFilesTeacher = () => {
-    const [files, setFiles] = useState([
-        {
-            id: 1,
-            name: 'Document.pdf',
-            size: '1.5 MB',
-            uploadedBy: 'John Doe',
-            email: 'john@example.com',
-            uploadDate: '2024-05-03'
-        },
-        {
-            id: 2,
-            name: 'Presentation.pptx',
-            size: '2.3 MB',
-            uploadedBy: 'Jane Smith',
-            email: 'jane@example.com',
-            uploadDate: '2024-05-02'
-        },
-        {
-            id: 3,
-            name: 'Image.jpg',
-            size: '800 KB',
-            uploadedBy: 'Alice Johnson',
-            email: 'alice@example.com',
-            uploadDate: '2024-05-01'
+const UploadedFilesTeacher = ({email}) => {
+    const [files, setFiles] = useState([]);
+    useEffect(() => {
+        const fetchFiles = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/users/getFile', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email })
+                });
+                const result = await response.json();
+                setFiles(result);  // Assuming the API returns an array of files
+            } catch (error) {
+                console.error('Failed to fetch files:', error);
+            }
+        };
+
+        if (email) {
+            fetchFiles();
         }
-    ]);
+    }, [email]);
+   
+
+    
+   
+        // {
+        //     id: 1,
+        //     name: 'Document.pdf',
+        //     size: '1.5 MB',
+        //     uploadedBy: 'John Doe',
+        //     email: 'john@example.com',
+        //     uploadDate: '2024-05-03'
+        // },
+        // {
+        //     id: 2,
+        //     name: 'Presentation.pptx',
+        //     size: '2.3 MB',
+        //     uploadedBy: 'Jane Smith',
+        //     email: 'jane@example.com',
+        //     uploadDate: '2024-05-02'
+        // },
+        // {
+        //     id: 3,
+        //     name: 'Image.jpg',
+        //     size: '800 KB',
+        //     uploadedBy: 'Alice Johnson',
+        //     email: 'alice@example.com',
+        //     uploadDate: '2024-05-01'
+        // }
+    
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchedFiles, setSearchedFiles] = useState([]);

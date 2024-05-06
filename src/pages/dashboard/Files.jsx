@@ -7,30 +7,31 @@ import useAuth from '../../hooks/useAuth';
 
 const Files = () => {
     const { auth } = useAuth();
-
-    // return (
-    //     <div className='px-2'>
-    //         {
-    //             auth?.role === 2001 ?
-    //             (
-    //                 <>
-    //                     <Uploadbox />
-    //                     <UploadedFilesTeacher />
-    //                 </>
-    //             ) : (
-    //                 <UploadedFilesStudent />
-    //             )
-    //         }
-    //     </div>
-    // );
+    console.log(auth);
 
     return (
-        <div className="px-2">
-            <Uploadbox />
-            {/* <UploadedFilesTeacher /> */}
-            <UploadedFilesStudent />
+        <div className='px-2'>
+            {
+                auth?.role === 2001 ?
+                (
+                    <>
+                        <Uploadbox />
+                        <UploadedFilesTeacher email={auth.email}/>
+                    </>
+                ) : (
+                    <UploadedFilesStudent />
+                )
+            }
         </div>
-    )
+    );
+
+    // return (
+    //     <div className="px-2">
+    //         <Uploadbox />
+    //         {/* <UploadedFilesTeacher /> */}
+    //         <UploadedFilesStudent />
+    //     </div>
+    // )
 };
 
 export default Files;

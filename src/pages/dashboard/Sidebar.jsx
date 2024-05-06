@@ -1,20 +1,20 @@
 import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react"
 import { useContext, createContext, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-// import useLogout from "../../hooks/useLogout"
+import useLogout from "../../hooks/useLogout"
 
 const SidebarContext = createContext()
 
 export default function Sidebar({ children }) {
     const [expanded, setExpanded] = useState(true);
-    // const navigate = useNavigate();
-    // const logout = useLogout();
+    const navigate = useNavigate();
+    const logout = useLogout();
 
-    // const signOut = async () => {
-    //     await logout();
-    //     navigate("/Landing");
+    const signOut = async () => {
+        await logout();
+        navigate("/Landing");
 
-    // }
+    }
 
     return (
         <aside className="h-screen">

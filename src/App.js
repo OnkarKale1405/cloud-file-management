@@ -12,6 +12,8 @@ import Regsiter from "./pages/Regsiter";
 import Dashboard from "./pages/dashboard/Dashboard"
 import Files from "./pages/dashboard/Files";
 import Profile from "./pages/dashboard/Profile";
+import useAuth from "./hooks/useAuth";
+// import PersistLogin from "./logic/PersistLogin";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,7 +30,9 @@ const router = createBrowserRouter(
 )
 
 function App() {
+
   return (
+    
     <RouterProvider router={router} />
   );
 }

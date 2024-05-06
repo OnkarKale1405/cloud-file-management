@@ -29,7 +29,7 @@ const Login = () => {
     // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        console.log(formData);
         // Validation
         const validationErrors = {};
         if (!formData.email || !emailRegex.test(formData.email)) {
@@ -44,21 +44,31 @@ const Login = () => {
             setErrors(validationErrors);
             return;
         }
-
+        const FinalFormData={
+            email:formData.email,
+            password:formData.password
+        }
+        console.log(FinalFormData);
         // If no validation errors, send data to the backend
         try {
-            // const response = await axios.post('/api/login', formData, {
-            //     withCredentials: true
-            // });
-            // console.log(response.data);
-            // const accessToken = response.data.accessToken ;
-            // const username = response.data.username ;
-            // const role = response.data.role ;
-            // setAuth({ email: formData.email, username, accessToken, role });
+            const response = await fetch('http://localhost:8000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Set the Content-Type header
+                },
+                body: JSON.stringify(FinalFormData), // Stringify the object
+            });
 
-            // if (auth.accessToken) {
+            const result = await response.json();
+            console.log(result);
+            const accessToken = result.data.accessToken ;
+            const username = result.data.user.username ;
+            const role = result.data.user.role ;
+            setAuth({ email: formData.email, username, accessToken, role });
+
+            if (auth.accessToken) {
                 navigate('/dashboard/files');
-            // }
+            }
 
 
         } catch (error) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const Landing = () => {
     return (
@@ -7,7 +8,7 @@ const Landing = () => {
             style={{
                 backgroundImage: 'linear-gradient(to bottom right, #FDB2D0 0%,#A2D2FF 50%, #F9DBE7 80%, #F4DDEF 100%)',
             }}>
-            {/* <Navbar /> */}
+            <Navbar />
             <div className="flex flex-grow w-full h-full">
                 <div className="w-[60%] h-full flex justify-center items-center">
                     <div className="w-[90%] h-[60%] text-[#323232] flex flex-col justify-center">
