@@ -22,7 +22,10 @@ const FileSchema=new Schema({
     uploadDate: { 
         type: Date, 
         default: Date.now 
-    } 
+    },
+    size:{
+        type:Number,
+    }
 }
 )
 

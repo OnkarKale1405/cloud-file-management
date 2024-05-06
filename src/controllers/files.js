@@ -13,8 +13,9 @@ const getFiles=async(req,res)=>{
     try{
         const {email}=req.body;
         const user =await User.findOne({email:email});
+        console.log(user)
         const files=await File.find({});
-        res.status(200).json(files);
+        res.status(200).json({files,user});
     }
     catch(err){
         console.log(err);
@@ -36,7 +37,8 @@ const uploadFiles=async(req,res)=>{
                     fileURL:response.secure_url,
                     publicID:response.public_id,
                     userId:user._id,
-                    department: user.department
+                    department: user.department,
+                    size:response.bytes
                 }];
                 File.insertMany(newFile).then((res)=>{console.log(res);});
                 res.status(200).json("File Successfully Uploaded")
@@ -69,40 +71,53 @@ const deleteFiles=async(req,res)=>{
     }
 };
 
-const downloadedFile = async (req, res) => {
-    try {
-        const __dirname = path.resolve(path.dirname(''));
-        console.log(__dirname);
-        const outputPath = path.resolve(__dirname);
-       
-        const { secure_url } = req.body;
 
-        const downloadFile = async (secure_url, outputPath) => {
+
+        const downloadedFile = async (req, res) => {
             try {
-                const response = await axios({
-                    method: 'GET',
-                    url: secure_url,
-                    responseType: 'stream'
-                });
-
-                const writer = fs.createWriteStream(outputPath);
-
-                response.data.pipe(writer);
-
-                return new Promise((resolve, reject) => {
-                    writer.on('finish', resolve);
-                    writer.on('error', reject);
-                });
+                const basePath = path.resolve("./downloads"); // Define a base path for downloads
+                if (!fs.existsSync(basePath)) {
+                    fs.mkdirSync(basePath, { recursive: true });
+                }
+        
+                const { secure_url } = req.body;
+                if (!secure_url) {
+                    return res.status(400).json("Missing URL");
+                }
+        
+                // Generate a filename
+                const filename = path.basename(new URL(secure_url).pathname);
+                const outputPath = path.join(basePath, filename);
+        
+                const downloadFile = async (url, outputPath) => {
+                    try {
+                        const response = await axios({
+                            method: 'GET',
+                            url,
+                            responseType: 'stream'
+                        });
+        
+                        const writer = fs.createWriteStream(outputPath);
+        
+                        response.data.pipe(writer);
+        
+                        return new Promise((resolve, reject) => {
+                            writer.on('finish', resolve);
+                            writer.on('error', () => {
+                                fs.unlink(outputPath, () => reject(new Error("Failed to write the file")));
+                            });
+                        });
+                    } catch (error) {
+                        throw new Error('Error downloading file: ' + error.message);
+                    }
+                };
+        
+                await downloadFile(secure_url, outputPath);
+                res.json({ message: "File downloaded successfully", path: outputPath });
             } catch (error) {
-                throw new Error('Error downloading file: ' + error.message);
+                res.status(500).json({ error: error.message });
             }
         };
-
-        await downloadFile(secure_url, outputPath);
-        res.json("File Downloaded");
-    } catch (error) {
-        res.status(500).json(error.message);
-    }
-};
+        
 
 export {uploadFiles,deleteFiles,downloadedFile,getFiles};

@@ -27,17 +27,17 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-    const role=2000;
+    let role=2000;
     const { username, email, firstName,lastName, password } = req.body;
     if(req.body.user=="Student"){
          role=2000
     }
 
-    if (
-        [username, email, firstName,lastName, password ,role].some((field) => field?.trim() === "")
-    ) {
-        throw new ApiError(400, "All fields are required");
-    }
+    // if (
+    //     [username, email, firstName,lastName, password ,role].some((field) => field?.trim() === "")
+    // ) {
+    //     throw new ApiError(400, "All fields are required");
+    // }
 
     const existUser = await User.findOne({
         $or: [{ username }, { email }],
@@ -76,6 +76,7 @@ const registerUser = asyncHandler(async (req, res) => {
     return res
         .status(201)
         .json(new ApiResponse(200, createdUser, "User registered Successfully"));
+        console.log("nilay");
 });
 
 const loginUser = asyncHandler(async (req, res) => {
