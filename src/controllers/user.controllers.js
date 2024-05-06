@@ -5,6 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -26,11 +27,14 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-
-    const { username, email, fullname, password } = req.body;
+    const role=2000;
+    const { username, email, firstName,lastName, password } = req.body;
+    if(req.body.user=="Student"){
+         role=2000
+    }
 
     if (
-        [username, email, fullname, password].some((field) => field?.trim() === "")
+        [username, email, firstName,lastName, password ,role].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields are required");
     }
@@ -41,20 +45,23 @@ const registerUser = asyncHandler(async (req, res) => {
     if (existUser) {
         throw new ApiError(409, "User with email or username already exists");
     }
-
+    console.log(req.body);
     const avatarLocalPath = req.files?.avatar[0]?.path;
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required");
     }
-
+    console.log(avatarLocalPath);
     const avatar = await uploadOnCloudinary(avatarLocalPath);
+    console.log(avatar);
     if (!avatar) {
         throw new ApiError(400, "Avatar file is required");
     }
 
     const user = await User.create({
-        fullname,
+        firstName,
+        lastName,
         avatar: avatar.url,
+        role,
         email,
         password,
         username: username.toLowerCase(),
@@ -77,22 +84,24 @@ const loginUser = asyncHandler(async (req, res) => {
     // check if user exists
     // check the password
     // send access and refresh tokens in secure cookies
+    // console.log(req);
+    const { email, password } = req.body;
 
-    const { username, email, password } = req.body;
-
-    if (!(username || email)) {
-        throw new ApiError(400, "username or email is required");
+    if (!( email)) {
+        throw new ApiError(400, " email is required");
     }
 
     const user = await User.findOne({
-        $or: [{ username }, { email }],
+        $or: [ { email }],
     });
-
+    console.log(user);
     if (!user) {
         throw new ApiError(404, "User does not exist");
     }
 
-    const isPasswordValid = await user.isPasswordCorrect(password);
+    // const isPasswordValid = await user.isPasswordCorrect(password);
+    const isPasswordValid= await bcrypt.compare(password, user.password)
+    console.log(isPasswordValid)
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid user credentials");
     }

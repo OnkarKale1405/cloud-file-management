@@ -1,13 +1,14 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import userRouter from "./routes/user.routes.js"
+import userRouter from "./routes/User.js"
 import mongoose from "mongoose";
 import dotenv from "dotenv"
+import fileRouter from "./routes/Files.js"
 
 dotenv.config({
         path: './.env'
-    })
+   }) 
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({
 app.use(express.static("public"));
 app.use(cookieParser())
 app.use("/api/users", userRouter);
+app.use("/api/users",fileRouter);
 
 const url=process.env.ATLAS_URL;
 console.log(url);

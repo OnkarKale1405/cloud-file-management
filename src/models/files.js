@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const FileSchema=new Schema({
     fileName:{
@@ -26,5 +26,5 @@ const FileSchema=new Schema({
 }
 )
 
-const File=mongoose.model("File",FileSchema);
-export default File
+export const File=mongoose.model("File",FileSchema);
+ 

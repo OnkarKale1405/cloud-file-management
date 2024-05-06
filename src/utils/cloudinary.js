@@ -1,42 +1,54 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import dotenv from "dotenv"
+import { File } from "../models/files.js";
 
+dotenv.config({
+        path: './.env'
+   }) 
+console.log(process.env.API_KEY);
+const cloud_name=process.env.cloud_name;
+const api_key=process.env.API_KEY;
+const api_secret=process.env.API_SECRET;
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET
+    cloud_name:"dhk1v7s3d",
+    api_key: "254493958599184",
+    api_secret:"-KVgbSmDOdEkXYW-uIAw529_2t0"
 });
+
 
 const uploadOnCloudinary = async (path) => {
     try {
         if (!path) return null;
-        // upload the file on cloudinary
-
+        
         const response = await cloudinary.uploader.upload(path, {
             resource_type: "auto",
-            folder:"Uploaded Files"
-        })
-        // file has been uploaded successfully
-        fs.unlinkSync(path);
+            folder: "Uploaded Files"
+        });
+        
+        // Delete the local file after successful upload
+        await fs.promises.unlink(path);
+        
         console.log("File uploaded successfully");
-        return response
-    }
-    catch (err) {
-        fs.unlinkSync(path); // remove the locally saved temporary file as the upload operation got failed
+        console.log(response);
+        return response;
+    } catch (err) {
+        console.error("Error uploading file to Cloudinary:", err);
         return null;
     }
-}
+};
 
-const deleteOnCloudinary = async (imageUrl) => {
+const deleteOnCloudinary = async (secure_url) => {
     try {
-        if (!imageUrl) return null;
-
-        // Extract public ID from the URL
-        const publicId = imageUrl.split("/").pop().split(".")[0];
-
-        // Delete the image file on Cloudinary using the extracted public ID
-        const response = await cloudinary.uploader.destroy(publicId, { "resource_type": "image" });
-
+        if (!secure_url) return null;
+        console.log(secure_url);
+        const FileToBeDeleted=await File.findOne({fileURL:secure_url});
+        console.log(FileToBeDeleted);
+        const publicId=FileToBeDeleted.publicID;
+        // const publicId = (secure_url).split("/").pop().split(".")[0];
+        
+        const response = await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+        
         return response;
     } catch (error) {
         console.error("Error deleting image file on Cloudinary:", error);
@@ -44,4 +56,4 @@ const deleteOnCloudinary = async (imageUrl) => {
     }
 };
 
-export { uploadOnCloudinary,deleteOnCloudinary };
+export { uploadOnCloudinary, deleteOnCloudinary };

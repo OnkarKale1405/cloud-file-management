@@ -17,7 +17,13 @@ const userSchema = new Schema({
         unique: true,
         trim: true
     },
-    fullname: {
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
+    },
+    lastName: {
         type: String,
         required: true,
         trim: true,
@@ -33,7 +39,7 @@ const userSchema = new Schema({
     },
     role: {
         type: Number,
-        default: 2000
+        default: 2001
     },
     refreshToken: {
         type: String
@@ -59,7 +65,8 @@ userSchema.methods.generateAccessToken = function () {
             _id: this._id,
             username: this.username,
             email: this.email,
-            fullname: this.fullname
+            firstName: this.firstName,
+            lastName:this.lastName
         },
         process.env.ACCESS_TOKEN_SECRET,
         {

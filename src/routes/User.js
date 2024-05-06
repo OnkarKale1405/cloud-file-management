@@ -10,7 +10,7 @@ import {
 } from "../controllers/user.controllers.js";
 
 // middlewares
-import { upload } from "../middlewares/multer.middleware.js"
+import { upload } from "../middlewares/multer.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
