@@ -14,7 +14,7 @@ const getFiles=async(req,res)=>{
         const {email}=req.body;
         const user =await User.findOne({email:email});
         const files=await File.find({});
-        res.status(200).res(files);
+        res.status(200).json(files);
     }
     catch(err){
         console.log(err);
