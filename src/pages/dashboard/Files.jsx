@@ -15,11 +15,11 @@ const Files = () => {
                 auth?.role === 2001 ?
                 (
                     <>
-                        <Uploadbox />
-                        <UploadedFilesTeacher email={auth.email}/>
+                        {/* <Uploadbox /> */}
+                        <UploadedFilesTeacher/>
                     </>
                 ) : (
-                    <UploadedFilesStudent />
+                    <UploadedFilesStudent email={auth.email}/>
                 )
             }
         </div>

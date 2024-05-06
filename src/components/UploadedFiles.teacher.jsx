@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useFiles } from '../context/FilesProvider';
+import useAuth from "../hooks/useAuth";
+
 // import useAuth from '../hooks/useAuth';
 
 const FilterDropdown = ({ onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
+    
 
     const handleFilterChange = (option) => {
         onChange(option);
@@ -36,29 +40,84 @@ const FilterDropdown = ({ onChange }) => {
 };
 
 const UploadedFilesTeacher = ({email}) => {
+    console.log("page starts here")
     const [files, setFiles] = useState([]);
-    useEffect(() => {
-        const fetchFiles = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/users/getFile', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email })
-                });
-                const result = await response.json();
-                setFiles(result);  // Assuming the API returns an array of files
-            } catch (error) {
-                console.error('Failed to fetch files:', error);
-            }
-        };
+    const { auth } = useAuth();
+    const  [uploadedFiles, setUploadedFiles]= useState([]);
+    const [currentFile, setCurrentFile] = useState(null);
+    const [showProgress, setShowProgress] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0); // Track upload progress
+    const fileInputRef = useRef(null);
 
-        if (email) {
-            fetchFiles();
+    
+    const fetchFiles = async () => {
+        console.log("hello1")
+        console.log("current file is "+currentFile)
+        try {
+            const response = await fetch('http://localhost:8000/api/users/getFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email })
+            });
+            const result = await response.json();
+            console.log(result)
+            setFiles(result.files);  // Assuming the API returns an array of files
+        } catch (error) {
+            console.error('Failed to fetch files:', error);
         }
-    }, [email]);
-   
+
+    };
+
+    useEffect(() => {
+
+        fetchFiles();
+
+    }, []);
+
+    
+    const handleFileInputChange = (e) => {
+        const selectedFiles = Array.from(e.target.files);
+        setUploadedFiles([...uploadedFiles, ...selectedFiles]);
+        setCurrentFile(selectedFiles[selectedFiles.length - 1]); // Set the latest selected file as the current file
+    }
+
+    const handleUpload = async () => {
+        if (!currentFile) {
+            console.log('No file selected.');
+            return;
+        }
+
+        console.log('Uploading file:', currentFile);
+        try {
+            setShowProgress(true);
+            console.log(auth);
+            const formData = new FormData();
+            formData.append('NewFile', currentFile); // Set the field name here
+            formData.append('email', auth.email)
+
+            const response = await fetch('http://localhost:8000/api/users/uploadFile', {
+                method: 'POST',
+                body: formData,
+                onUploadProgress: (progressEvent) => {
+                    // Calculate and update upload progress
+                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    setUploadProgress(progress);
+                }
+            });
+
+            const result = await response.json();
+            console.log('Upload result:', result);
+            fetchFiles();
+            setShowProgress(false);
+            setUploadProgress(0); // Reset upload progress after completion
+        } catch (error) {
+            console.log('Error uploading file:', error);
+            setShowProgress(false);
+            setUploadProgress(0); // Reset upload progress in case of error
+        }
+    }
 
     
    
@@ -94,22 +153,71 @@ const UploadedFilesTeacher = ({email}) => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     useEffect(() => {
-        setSearchedFiles(files.filter(file =>
-            file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            file.uploadedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            file.email.toLowerCase().includes(searchTerm.toLowerCase())
+        setSearchedFiles(files?.filter(file =>
+            file.fileName.toLowerCase().includes(searchTerm.toLowerCase()) 
+            // file.uploadedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            // file.email.toLowerCase().includes(searchTerm.toLowerCase())
         ));
     }, [files, searchTerm]);
 
-    const handleDownloadFile = (fileId) => {
+    const handleDownloadFile = async(fileId,fileURL) => {
         console.log('Downloading file with id:', fileId);
+        try {
+            const secure_url = fileURL; // Assuming fileURL is a valid URL string
+        const response = await fetch('http://localhost:8000/api/users/downloadFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to delete file');
+            }
+    
+            const result = await response.json();
+            console.log(result);
+            // If you need to perform additional actions after deleting the file
+            fetchFiles();
+            // console.log('File deleted successfully:', fileId);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
+
     };
 
-    const handleDeleteFile = (fileId) => {
-        setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
-        setSelectedFiles(prevSelectedFiles => prevSelectedFiles.filter(id => id !== fileId));
+    const handleDeleteFile = async (fileId, fileURL) => {
+        try {
+            const secure_url = fileURL; // Assuming fileURL is a valid URL string
+    
+            const response = await fetch('http://localhost:8000/api/users/deleteFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to delete file');
+            }
+    
+            const result = await response.json();
+            console.log(result);
+    
+            // If you need to perform additional actions after deleting the file
+            fetchFiles();
+            // console.log('File deleted successfully:', fileId);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
         console.log('Deleting file with id:', fileId);
+
     };
+    
+
+
 
     const handleDeleteSelectedFiles = () => {
         const remainingFiles = files.filter(file => !selectedFiles.includes(file.id));
@@ -133,32 +241,37 @@ const UploadedFilesTeacher = ({email}) => {
         setIsFilterOpen(false);
         switch (option) {
             case 'size':
-                setSearchedFiles([...searchedFiles].sort((a, b) => {
-                    const getSizeValue = (size) => {
-                        const [value, unit] = size.split(' ');
-                        return unit === 'MB' ? parseFloat(value) * 1024 : parseFloat(value);
-                    };
-                    return getSizeValue(a.size) - getSizeValue(b.size);
-                }));
-                break;
+    setSearchedFiles([...searchedFiles].sort((a, b) => {
+        // Function to convert size from bytes to megabytes
+        const getSizeInMB = (sizeInBytes) => {
+            return parseFloat(sizeInBytes) / (1024 * 1024);
+        };
+
+        // Get sizes in MB and compare
+        const sizeAInMB = getSizeInMB(a.size);
+        const sizeBInMB = getSizeInMB(b.size);
+        return sizeAInMB - sizeBInMB;
+    }));
+    break;
+
             case 'uploadAsc':
                 setSearchedFiles([...searchedFiles].sort((a, b) => new Date(a.uploadDate) - new Date(b.uploadDate)));
                 break;
             case 'uploadDesc':
                 setSearchedFiles([...searchedFiles].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)));
                 break;
-            case 'Computer Science':
-                setSearchedFiles(files.filter(file => file.department === 'Computer Science'));
-                break;
-            case 'Mechanical':
-                setSearchedFiles(files.filter(file => file.department === 'Mechanical'));
-                break;
-            case 'Chemical':
-                setSearchedFiles(files.filter(file => file.department === 'Chemical'));
-                break;
-            case 'AI/ML':
-                setSearchedFiles(files.filter(file => file.department === 'AI/ML'));
-                break;
+            // case 'Computer Science':
+            //     setSearchedFiles(files.filter(file => file.department === 'Computer Science'));
+            //     break;
+            // case 'Mechanical':
+            //     setSearchedFiles(files.filter(file => file.department === 'Mechanical'));
+            //     break;
+            // case 'Chemical':
+            //     setSearchedFiles(files.filter(file => file.department === 'Chemical'));
+            //     break;
+            // case 'AI/ML':
+            //     setSearchedFiles(files.filter(file => file.department === 'AI/ML'));
+            //     break;
             default:
                 break;
         }
@@ -166,7 +279,43 @@ const UploadedFilesTeacher = ({email}) => {
 
 
 
-    return (
+    return (    
+        <>
+                <div className='upload-box w-full' style={{ overflowX: 'hidden' }}>
+            <form>
+                <div className='w-full h-[12rem] flex justify-center items-center my-4 bg-blue-100 rounded-xl
+                    border-2 border-blue-400 relative'
+                    onClick={() => fileInputRef.current.click()}>
+                    <input type="file" name="file" id="file" hidden ref={fileInputRef} onChange={handleFileInputChange} multiple />
+                    <p className="text-xl text-[#323232]">Browse file to upload</p>
+                </div>
+                <button onClick={handleUpload} disabled={!currentFile} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="button">
+                    Upload
+                </button>
+            </form>
+            {showProgress && currentFile && (
+    <section className='loading-area'>
+        <div className='content w-full h-28 bg-blue-100 rounded-lg flex flex-col relative'>
+            <div className='file-description w-full h-[60%] flex justify-start'>
+                <div className='h-full w-20 flex justify-center items-center'>
+                    <div className='w-10 h-10 rounded-full bg-blue-300'></div>
+                </div>
+                <div className='file-name-size w-[60%] flex flex-col justify-center'>
+                    <p className='text-sm'>{`${currentFile.name} - uploading`}</p>
+                    <p className='text-xs'>{currentFile.size} bytes</p>
+                </div>
+                <div className='w-4 h-4 rounded-full bg-blue-300 absolute top-3 right-3'></div>
+            </div>
+        </div>
+    </section>
+)}
+
+        </div>
+
+
+
+
+
         <div className='rounded-xl border border-blue-300'>
             <div className='heading-area border-b border-blue-300 flex justify-start items-center px-5 py-6'>
                 <div>
@@ -197,7 +346,7 @@ const UploadedFilesTeacher = ({email}) => {
                             <th className="px-3 py-4 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '5%' }}>
                                 <input type="checkbox" onChange={(e) => {
                                     if (e.target.checked) {
-                                        setSelectedFiles(searchedFiles.map(file => file.id));
+                                        setSelectedFiles(searchedFiles.map(file => file._id));
                                     } else {
                                         setSelectedFiles([]);
                                     }
@@ -209,9 +358,9 @@ const UploadedFilesTeacher = ({email}) => {
                             <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '15%' }}>
                                 Size
                             </th>
-                            <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '20%' }}>
+                            {/* <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '20%' }}>
                                 Uploaded By
-                            </th>
+                            </th> */}
                             <th className="p-3 bg-blue-500 text-left text-xs leading-4 font-medium text-white uppercase tracking-wider" style={{ width: '15%' }}>
                                 Date of Upload
                             </th>
@@ -232,24 +381,24 @@ const UploadedFilesTeacher = ({email}) => {
                                         <input type="checkbox" onChange={() => toggleSelectFile(file.id)} checked={selectedFiles.includes(file.id)} />
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-                                        {file.name}
+                                        {file.fileName}
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                         {file.size}
                                     </td>
-                                    <td className="p-3 whitespace-no-wrap text-sm leading-5 flex">
+                                    {/* <td className="p-3 whitespace-no-wrap text-sm leading-5 flex">
                                         <div className="w-8 h-8 rounded-full bg-blue-300"></div>
                                         <div className="flex flex-col ml-2">
                                             <div>{file.uploadedBy}</div>
                                             <div className="text-xs text-gray-500">{file.email}</div>
                                         </div>
-                                    </td>
+                                    </td> */}
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                         {file.uploadDate}
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                                        <button onClick={() => handleDownloadFile(file.id)} className="text-blue-600 underline">Download</button>
-                                        <button onClick={() => handleDeleteFile(file.id)} className="ml-2 text-red-600 underline">Delete</button>
+                                        <button onClick={() => handleDownloadFile(file._id,file.fileURL)} className="text-blue-600 underline">Download</button>
+                                        <button onClick={() => handleDeleteFile(file._id,file.fileURL)} className="ml-2 text-red-600 underline">Delete</button>
                                     </td>
                                 </tr>
                             ))
@@ -258,7 +407,12 @@ const UploadedFilesTeacher = ({email}) => {
                 </table>
             </div>
         </div>
+        </>
+
     );
 };
 
 export default UploadedFilesTeacher;
+
+
+

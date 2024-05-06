@@ -13,6 +13,8 @@ import Dashboard from "./pages/dashboard/Dashboard"
 import Files from "./pages/dashboard/Files";
 import Profile from "./pages/dashboard/Profile";
 import useAuth from "./hooks/useAuth";
+import { AuthProvider } from "./context/AuthProvider";
+import { BrowserRouter } from "react-router-dom";
 // import PersistLogin from "./logic/PersistLogin";
 
 const router = createBrowserRouter(

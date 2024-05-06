@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 // First Step Component
 const StepOne = ({ formData, onNext, onChange }) => {
@@ -69,6 +70,7 @@ const StepOne = ({ formData, onNext, onChange }) => {
 
 // Second Step Component
 const StepTwo = ({ formData, onBack ,onChange,handleAvatarChange}) => {
+    const navigate = useNavigate();
     const handleRegister = async () => {
         // Create a new FormData object
         const finalFormData = new FormData();
@@ -91,6 +93,7 @@ const StepTwo = ({ formData, onBack ,onChange,handleAvatarChange}) => {
             });
             const result = await response.json();
             console.log(result);
+            navigate("/login");
         } catch (error) {
             console.log('Error sending data to backend:');
             console.error(error);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useAuth from '../hooks/useAuth';
 
 const FilterDropdown = ({ onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -75,49 +76,80 @@ const FilterDropdown = ({ onChange }) => {
     );
 };
 
-const UploadedFilesStudent = () => {
-    const [files, setFiles] = useState([
-        {
-            id: 1,
-            name: 'Document.pdf',
-            size: '1.5 MB',
-            uploadedBy: 'John Doe',
-            email: 'john@example.com',
-            uploadDate: '2024-05-03'
-        },
-        {
-            id: 2,
-            name: 'Presentation.pptx',
-            size: '2.3 MB',
-            uploadedBy: 'Jane Smith',
-            email: 'jane@example.com',
-            uploadDate: '2024-05-02'
-        },
-        {
-            id: 3,
-            name: 'Image.jpg',
-            size: '800 KB',
-            uploadedBy: 'Alice Johnson',
-            email: 'alice@example.com',
-            uploadDate: '2024-05-01'
-        }
-    ]);
+const UploadedFilesStudent = ({email}) => {
+    const {auth}=useAuth();
+    console.log(email);
+    const [files, setFiles] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchedFiles, setSearchedFiles] = useState([]);
     const [filterOption, setFilterOption] = useState('');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    // const email=auth.email;
+    console.log(email);
+    const [user,setUser]=useState("");
+
+    const fetchFiles = async () => {
+        console.log("hello1")
+        // console.log("current file is "+currentFile)
+        try {
+            const response = await fetch('http://localhost:8000/api/users/getFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email})
+            });
+            const result = await response.json();
+            console.log(result)
+            setFiles(result.files);
+            setUser(result.user);  // Assuming the API returns an array of files
+        } catch (error) {
+            console.error('Failed to fetch files:', error);
+        }
+
+    };
+
+    useEffect(() => {
+
+        fetchFiles();
+
+    }, []);
+
 
     useEffect(() => {
         setSearchedFiles(files.filter(file =>
-            file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            file.uploadedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            file.email.toLowerCase().includes(searchTerm.toLowerCase())
+            file.fileName.toLowerCase().includes(searchTerm.toLowerCase())
+            // file.uploadedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            // file.email.toLowerCase().includes(searchTerm.toLowerCase())
         ));
     }, [files, searchTerm]);
 
-    const handleDownloadFile = (fileId) => {
+    const handleDownloadFile = async(fileId,fileURL) => {
         console.log('Downloading file with id:', fileId);
+        try {
+            const secure_url = fileURL; // Assuming fileURL is a valid URL string
+        const response = await fetch('http://localhost:8000/api/users/downloadFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ secure_url }) // No need for JSON.stringify if secure_url is already a string
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to delete file');
+            }
+    
+            const result = await response.json();
+            console.log(result);
+            // If you need to perform additional actions after deleting the file
+            fetchFiles();
+            // console.log('File deleted successfully:', fileId);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
+
     };
 
     const handleDeleteFile = (fileId) => {
@@ -228,7 +260,7 @@ const UploadedFilesStudent = () => {
                                         <input type="checkbox" onChange={() => toggleSelectFile(file.id)} checked={selectedFiles.includes(file.id)} />
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-                                        {file.name}
+                                        {file.fileName}
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                         {file.size}
@@ -236,16 +268,16 @@ const UploadedFilesStudent = () => {
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 flex">
                                         <div className="w-8 h-8 rounded-full bg-blue-300"></div>
                                         <div className="flex flex-col ml-2">
-                                            <div>{file.uploadedBy}</div>
-                                            <div className="text-xs text-gray-500">{file.email}</div>
+                                            {/* <div>{user.firstName}</div> */}
+                                            <div className="text-xs text-gray-500">{auth.email}</div>
                                         </div>
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                         {file.uploadDate}
                                     </td>
                                     <td className="p-3 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                                        <button onClick={() => handleDownloadFile(file.id)} className="text-blue-600 underline">Download</button>
-                                        <button onClick={() => handleDeleteFile(file.id)} className="ml-2 text-red-600 underline">Delete</button>
+                                        <button onClick={() => handleDownloadFile(file.id,file.fileURL)} className="text-blue-600 underline">Download</button>
+                                        {/* <button onClick={() => handleDeleteFile(file.id)} className="ml-2 text-red-600 underline">Delete</button> */}
                                     </td>
                                 </tr>
                             ))

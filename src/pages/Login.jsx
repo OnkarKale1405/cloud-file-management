@@ -64,7 +64,8 @@ const Login = () => {
             const accessToken = result.data.accessToken ;
             const username = result.data.user.username ;
             const role = result.data.user.role ;
-            setAuth({ email: formData.email, username, accessToken, role });
+            const avatar = result.data.user.avatar ;
+            setAuth({ email: formData.email, username, accessToken, role, avatar });
 
             if (auth.accessToken) {
                 navigate('/dashboard/files');

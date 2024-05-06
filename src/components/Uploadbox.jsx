@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
+import { useFiles } from "../context/FilesProvider";
 
 const Uploadbox = () => {
     const { auth } = useAuth();
-    const [files, setFiles] = useState([]);
+    const { uploadedFiles, setUploadedFiles } = useFiles();
     const [currentFile, setCurrentFile] = useState(null);
     const [showProgress, setShowProgress] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0); // Track upload progress
@@ -11,7 +12,7 @@ const Uploadbox = () => {
 
     const handleFileInputChange = (e) => {
         const selectedFiles = Array.from(e.target.files);
-        setFiles([...files, ...selectedFiles]);
+        setUploadedFiles([...uploadedFiles, ...selectedFiles]);
         setCurrentFile(selectedFiles[selectedFiles.length - 1]); // Set the latest selected file as the current file
     }
 

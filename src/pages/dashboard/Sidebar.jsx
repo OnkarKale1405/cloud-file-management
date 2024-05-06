@@ -1,6 +1,7 @@
 import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react"
 import { useContext, createContext, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import useAuth from "../../hooks/useAuth"
 import useLogout from "../../hooks/useLogout"
 
 const SidebarContext = createContext()
@@ -15,6 +16,8 @@ export default function Sidebar({ children }) {
         navigate("/Landing");
 
     }
+    const {auth} = useAuth();
+
 
     return (
         <aside className="h-screen">
@@ -40,7 +43,7 @@ export default function Sidebar({ children }) {
 
                 <div className="border-t border-b flex px-3 py-5 absolute bottom-12">
                     <img
-                        src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+                        src={auth.avatar}
                         alt=""
                         className="w-10 h-10 rounded-full"
                     />
@@ -51,8 +54,8 @@ export default function Sidebar({ children }) {
                         `}
                     >
                         <div className="leading-4">
-                            <h4 className="font-semibold">John Doe</h4>
-                            <span className="text-xs text-gray-600">johndoe@gmail.com</span>
+                            <h4 className="font-semibold">{auth.username}</h4>
+                            <span className="text-xs text-gray-600">{auth.email}</span>
                         </div>
                         <MoreVertical size={20} />
                     </div>
@@ -63,7 +66,7 @@ export default function Sidebar({ children }) {
 }
 
 export function SidebarItem({ icon, text, active, alert, to }) {
-    const { expanded } = useContext(SidebarContext)
+    const { expanded } = useContext(SidebarContext);
 
     return (
         <li>
