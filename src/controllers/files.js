@@ -36,6 +36,7 @@ const uploadFiles=async(req,res)=>{
                     fileURL:response.secure_url,
                     publicID:response.public_id,
                     userId:user._id,
+                    department: user.department
                 }];
                 File.insertMany(newFile).then((res)=>{console.log(res);});
                 res.status(200).json("File Successfully Uploaded")
