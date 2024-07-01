@@ -94,7 +94,7 @@ const UploadedFilesStudent = ({email}) => {
         console.log("hello1")
         // console.log("current file is "+currentFile)
         try {
-            const response = await fetch('http://localhost:8000/api/users/getFile', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/getFile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ const UploadedFilesStudent = ({email}) => {
             console.log('Downloading file with id:', fileId);
             // try {
             //     const secure_url = fileURL; // Assuming fileURL is a valid URL string
-            // const response = await fetch('http://localhost:8000/api/users/downloadFile', {
+            // const response = await fetch('https://cloud-file-management.onrender.com/api/users/downloadFile', {
             //         method: 'POST',
             //         headers: {
             //             'Content-Type': 'application/json'

@@ -88,7 +88,7 @@ const StepTwo = ({ formData, onBack ,onChange,handleAvatarChange}) => {
         finalFormData.append('avatar', formData.avatar);
     
         try {
-            const response = await fetch('http://localhost:8000/api/users/register', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/register', {
                 method: 'POST',
                 body: finalFormData, // Pass the final FormData object
             });

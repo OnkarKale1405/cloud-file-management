@@ -52,7 +52,7 @@ const Login = () => {
         console.log(FinalFormData);
         // If no validation errors, send data to the backend
         try {
-            const response = await fetch('http://localhost:8000/api/users/login', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', // Set the Content-Type header

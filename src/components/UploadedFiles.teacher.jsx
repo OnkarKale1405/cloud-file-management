@@ -56,7 +56,7 @@ const UploadedFilesTeacher = ({email}) => {
         console.log("hello1")
         console.log("current file is "+currentFile)
         try {
-            const response = await fetch('http://localhost:8000/api/users/getFile', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/getFile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const UploadedFilesTeacher = ({email}) => {
             formData.append('NewFile', currentFile); // Set the field name here
             formData.append('email', auth.email)
 
-            const response = await fetch('http://localhost:8000/api/users/uploadFile', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/uploadFile', {
                 method: 'POST',
                 body: formData,
                 onUploadProgress: (progressEvent) => {
@@ -168,7 +168,7 @@ const UploadedFilesTeacher = ({email}) => {
         console.log('Downloading file with id:', fileId);
         // try {
         //     const secure_url = fileURL; // Assuming fileURL is a valid URL string
-        // const response = await fetch('http://localhost:8000/api/users/downloadFile', {
+        // const response = await fetch('https://cloud-file-management.onrender.com/api/users/downloadFile', {
         //         method: 'POST',
         //         headers: {
         //             'Content-Type': 'application/json'
@@ -195,7 +195,7 @@ const UploadedFilesTeacher = ({email}) => {
         try {
             const secure_url = fileURL; // Assuming fileURL is a valid URL string
     
-            const response = await fetch('http://localhost:8000/api/users/deleteFile', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/deleteFile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

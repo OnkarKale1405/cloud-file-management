@@ -30,7 +30,7 @@ const Uploadbox = () => {
             formData.append('NewFile', currentFile); // Set the field name here
             formData.append('email', auth.email)
 
-            const response = await fetch('http://localhost:8000/api/users/uploadFile', {
+            const response = await fetch('https://cloud-file-management.onrender.com/api/users/uploadFile', {
                 method: 'POST',
                 body: formData,
                 onUploadProgress: (progressEvent) => {
